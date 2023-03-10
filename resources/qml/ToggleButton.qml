@@ -12,6 +12,44 @@ Switch {
 
     implicitWidth: indicatorItem.width
 
+    states: [
+        State {
+            name: "off"
+            when: !toggleButton.checked
+
+            PropertyChanges {
+                target: track
+                border.color: "#767676"
+            }
+
+            PropertyChanges {
+                target: handle
+                x: 0
+            }
+        }
+    ]
+    transitions: [
+        Transition {
+            to: "off"
+            reversible: true
+
+            ParallelAnimation {
+                NumberAnimation {
+                    target: handle
+                    property: "x"
+                    duration: 200
+                    easing.type: Easing.InOutQuad
+                }
+
+                ColorAnimation {
+                    target: track
+                    properties: "color,border.color"
+                    duration: 200
+                }
+            }
+        }
+    ]
+
     indicator: Item {
         id: indicatorItem
 
@@ -20,23 +58,27 @@ Switch {
         y: parent.height / 2 - height / 2
 
         Rectangle {
-            height: 3 * parent.height / 4
+            id: track
+
+            height: parent.height * 0.6
             radius: height / 2
             width: parent.width - height
             x: radius
             y: parent.height / 2 - height / 2
-            color: toggleButton.checked ? Nheko.colors.highlight : "grey"
-            border.color: "#cccccc"
+            color: Qt.rgba(border.color.r, border.color.g, border.color.b, 0.6)
+            border.color: Nheko.colors.highlight
         }
 
         Rectangle {
-            x: toggleButton.checked ? parent.width - width : 0
+            id: handle
+
+            x: indicatorItem.width - handle.width
             y: parent.height / 2 - height / 2
-            width: parent.height
+            width: parent.height * 0.9
             height: width
             radius: width / 2
-            color: toggleButton.enabled ? "whitesmoke" : "#cccccc"
-            border.color: "#ebebeb"
+            color: Nheko.colors.button
+            border.color: "#767676"
         }
 
     }
